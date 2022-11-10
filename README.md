@@ -10,7 +10,7 @@ on: [pull_request]
 
 jobs:
   pull_request:
-    uses: mathem-se/ecom-gh-actions/.github/workflows/pull-request.yml@main
+    uses: mathem-se/gh-workflows-node/.github/workflows/pull-request.yml@develop
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY}}
 ```
