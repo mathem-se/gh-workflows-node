@@ -6,6 +6,6 @@ on:
 
 jobs:
   Test:
-    uses: mathem-se/ecom-gh-actions/.github/workflows/pull-request-test.yml@develop
+    uses: mathem-se/gh-workflows-node/.github/workflows/pull-request-test.yml@develop
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
