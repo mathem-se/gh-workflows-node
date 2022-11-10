@@ -1,0 +1,48 @@
+on:
+  workflow_call:
+    inputs:
+      AWS_DEPLOY_REGION:
+        required: false
+        type: string
+        default: 'eu-west-1'
+      domain:
+        required: true
+        type: string
+    secrets:
+      NODE_AUTH_TOKEN:
+        required: true
+      AWS_CICD_ACCOUNT:
+        required: true
+      AWS_CICD_API_URL:
+        required: true
+      AWS_CICD_API_REGION:
+        required: true
+
+jobs:
+  Account:
+    uses: mathem-se/gh-account-mapping/.github/workflows/workflow.yml@main
+    with:
+      branch: ${{ github.ref_name }}
+      role-session-name: 'github-actions-oidc-session'
+    secrets:
+      AWS_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
+      AWS_API: ${{ secrets.AWS_CICD_API_URL }}
+      AWS_REGION: ${{ secrets.AWS_CICD_API_REGION }}
+
+  Test:
+    needs: [Account]
+    uses: mathem-se/ecom-gh-actions/.github/workflows/deploy-test.yml@upgrade
+    with:
+      domain: ${{ inputs.domain }}
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      AWS_ACCOUNT: ${{ needs.Account.outputs.account }}
+      AWS_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
+
+  Release:
+    needs: [Account, Test]
+    uses: mathem-se/ecom-gh-actions/.github/workflows/deploy-gh-package-release.yml@upgrade
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
+      NPM_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
+      NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}

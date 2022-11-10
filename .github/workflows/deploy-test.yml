@@ -1,0 +1,117 @@
+on:
+  workflow_call:
+    inputs:
+      domain:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCOUNT:
+        required: true
+      AWS_API_REGION:
+        required: true
+      NODE_AUTH_TOKEN:
+        required: true
+    outputs:
+      functions-coverage:
+        description: 'Unit test functions coverage'
+        value: ${{ jobs.Test.extract-coverage-pct.outputs.result}}
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+jobs:
+  Test (deploy):
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Run test
+        run: |
+          npm ci --ignore-scripts
+          npm run test:ci
+        shell: bash
+      - uses: actions/github-script@v6
+        id: fix-coverage-report
+        with:
+          result-encoding: string
+          script: |
+            const fs = require('fs')
+            const reportFilename = 'report.json'
+            const coverageFinalFilename = 'coverage-final.json'
+            const cwd = process.cwd()
+
+            const reportJsonFilepath = `${cwd}/coverage/${reportFilename}`
+            const coverageFinalFilepath = `${cwd}/coverage/${coverageFinalFilename}`
+
+            let reportJsonFile
+            let coverageFinalJsonFile
+
+            if (fs.existsSync(reportJsonFilepath)) {
+              reportJsonFile = require(reportJsonFilepath)
+            }
+
+            if (fs.existsSync(coverageFinalFilepath)) {
+              coverageFinalJsonFile = require(coverageFinalFilepath)
+            }
+
+            console.log('Files exists?', { reportFilename: !!reportJsonFile, coverageFinalFilename: !!coverageFinalJsonFile })
+
+            if (reportJsonFile && coverageFinalJsonFile) {
+              if (!reportJsonFile.coverageMap) {
+                console.log(`Adding coverageMap property to ${reportFilename} based on ${coverageFinalFilename}`)
+
+                reportJsonFile.coverageMap = coverageFinalJsonFile
+
+                fs.writeFileSync(reportJsonFilepath, JSON.stringify(reportJsonFile), (err) => {
+                  if (err) {
+                    console.error(err)
+                    process.exit(1)
+                  }
+                })
+              } else {
+                console.log(`coverageMap already exists in ${reportFilename}, not doing anything...`)
+                process.exit(0)
+              }
+            } else {
+              console.log('Not doing anything...')
+              process.exit(0)
+            }
+      - uses: actions/github-script@v6
+        id: extract-coverage-pct
+        with:
+          result-encoding: string
+          script: |
+            const coverageSummary = require("./coverage/coverage-summary.json")
+            return coverageSummary.total.functions.pct
+      - name: Archive code coverage results
+        if: |
+          github.ref_name == 'develop' ||
+          github.ref_name == 'main' ||
+          github.ref_name == 'master'
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: ./coverage/report.json
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        if: |
+          github.ref_name == 'develop' ||
+          github.ref_name == 'main' ||
+          github.ref_name == 'master'
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-actions
+          role-session-name: github-actions-oidc-session
+          aws-region: ${{ secrets.AWS_API_REGION }}
+      - uses: isbang/sqs-action@v0.1.1
+        if: |
+          github.ref_name == 'develop' ||
+          github.ref_name == 'main' ||
+          github.ref_name == 'master'
+        with:
+          sqs-url: https://sqs.eu-west-1.amazonaws.com/${{secrets.AWS_ACCOUNT}}/env-code-coverage-Queue
+          message: '{"project":"${{ inputs.domain }}", "score":"${{ steps.extract-coverage-pct.outputs.result }}"}'

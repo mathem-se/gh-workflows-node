@@ -1,0 +1,88 @@
+on:
+  workflow_call:
+    secrets:
+      NODE_AUTH_TOKEN:
+        required: true
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Run test
+        run: |
+          npm ci --ignore-scripts
+          npm run test:ci
+        shell: bash
+      - uses: actions/github-script@v6
+        id: fix-coverage-report
+        with:
+          result-encoding: string
+          script: |
+            const fs = require('fs')
+            const reportFilename = 'report.json'
+            const coverageFinalFilename = 'coverage-final.json'
+            const cwd = process.cwd()
+
+            const reportJsonFilepath = `${cwd}/coverage/${reportFilename}`
+            const coverageFinalFilepath = `${cwd}/coverage/${coverageFinalFilename}`
+
+            let reportJsonFile
+            let coverageFinalJsonFile
+
+            if (fs.existsSync(reportJsonFilepath)) {
+              reportJsonFile = require(reportJsonFilepath)
+            }
+
+            if (fs.existsSync(coverageFinalFilepath)) {
+              coverageFinalJsonFile = require(coverageFinalFilepath)
+            }
+
+            console.log('Files exists?', { reportFilename: !!reportJsonFile, coverageFinalFilename: !!coverageFinalJsonFile })
+
+            if (reportJsonFile && coverageFinalJsonFile) {
+              if (!reportJsonFile.coverageMap) {
+                console.log(`Adding coverageMap property to ${reportFilename} based on ${coverageFinalFilename}`)
+
+                reportJsonFile.coverageMap = coverageFinalJsonFile
+
+                fs.writeFileSync(reportJsonFilepath, JSON.stringify(reportJsonFile), (err) => {
+                  if (err) {
+                    console.error(err)
+                    process.exit(1)
+                  }
+                })
+              } else {
+                console.log(`coverageMap already exists in ${reportFilename}, not doing anything...`)
+                process.exit(0)
+              }
+            } else {
+              console.log('Not doing anything...')
+              process.exit(0)
+            }
+      - name: Download develop test report
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{ github.token}}
+          workflow: deploy.yml
+          workflow_conclusion: success
+          branch: develop
+          name: code-coverage-report
+          path: ./coverage/main
+      - name: Create test report
+        continue-on-error: true
+        uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          coverage-file: ./coverage/report.json
+          base-coverage-file: ./coverage/main/report.json
+          annotations: failed-tests

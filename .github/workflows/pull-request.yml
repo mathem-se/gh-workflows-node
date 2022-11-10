@@ -1,0 +1,11 @@
+on:
+  workflow_call:
+    secrets:
+      NODE_AUTH_TOKEN:
+        required: true
+
+jobs:
+  Test:
+    uses: mathem-se/ecom-gh-actions/.github/workflows/pull-request-test.yml@upgrade
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
