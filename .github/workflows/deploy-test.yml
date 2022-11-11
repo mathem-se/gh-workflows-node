@@ -20,7 +20,7 @@ env:
   NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
 jobs:
-  Test (deploy):
+  Test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
