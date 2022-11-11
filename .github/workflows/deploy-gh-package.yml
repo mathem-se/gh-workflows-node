@@ -1,15 +1,13 @@
 on:
   workflow_call:
     inputs:
-      AWS_DEPLOY_REGION:
-        required: false
-        type: string
-        default: 'eu-west-1'
       domain:
         required: true
         type: string
     secrets:
       NODE_AUTH_TOKEN:
+        required: true
+      SEMANTIC_RELEASE_TOKEN:
         required: true
       AWS_CICD_ACCOUNT:
         required: true
@@ -40,9 +38,8 @@ jobs:
       AWS_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
 
   Release:
-    needs: [Account, Test]
+    needs: [Test]
     uses: mathem-se/gh-workflows-node/.github/workflows/step-release-gh-package.yml@develop
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
-      NPM_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
-      NODE_AUTH_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      SEMANTIC_RELEASE_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}

@@ -20,7 +20,7 @@ name: Pull request
 on: [pull_request]
 
 jobs:
-  pull_request:
+  PR:
     uses: mathem-se/gh-workflows-node/.github/workflows/pull-request.yml@develop
     with:
       CHECK_LINT: false #if you don't want to check lint (defaults to true)
@@ -49,7 +49,7 @@ jobs:
       domain: <repo name> #change value
       team: <team name> #change value
     secrets:
-      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY}}
+      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY }}
       AWS_CICD_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
       AWS_CICD_API_URL: ${{ secrets.AWS_CICD_API_URL }}
       AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
