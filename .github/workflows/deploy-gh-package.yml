@@ -31,7 +31,7 @@ jobs:
 
   Test:
     needs: [Account]
-    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-test.yml@develop
+    uses: mathem-se/gh-workflows-node/.github/workflows/step-test-deploy.yml@develop
     with:
       domain: ${{ inputs.domain }}
     secrets:
@@ -41,7 +41,7 @@ jobs:
 
   Release:
     needs: [Account, Test]
-    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-gh-package-release.yml@develop
+    uses: mathem-se/gh-workflows-node/.github/workflows/step-release-gh-package.yml@develop
     secrets:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
       NPM_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
