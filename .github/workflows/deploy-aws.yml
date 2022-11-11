@@ -21,9 +21,6 @@ on:
       AWS_CICD_API_REGION:
         required: true
 
-env:
-  NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-
 jobs:
   Account:
     uses: mathem-se/gh-account-mapping/.github/workflows/workflow.yml@main
