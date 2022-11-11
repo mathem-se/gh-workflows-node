@@ -21,7 +21,7 @@ on: [pull_request]
 
 jobs:
   PR:
-    uses: mathem-se/gh-workflows-node/.github/workflows/pull-request.yml@develop
+    uses: mathem-se/gh-workflows-node/.github/workflows/pull-request.yml@main
     with:
       CHECK_LINT: false #if you don't want to check lint (defaults to true)
     secrets:
@@ -44,7 +44,7 @@ permissions:
 
 jobs:
   Deploy:
-    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-aws.yml@develop
+    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-aws.yml@main
     with:
       domain: <repo name> #change value
       team: <team name> #change value
@@ -75,7 +75,7 @@ permissions:
 
 jobs:
   Deploy:
-    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-gh-package.yml@develop
+    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-gh-package.yml@main
     with:
       domain: <repo name> #change value
     secrets:

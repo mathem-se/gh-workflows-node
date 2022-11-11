@@ -11,10 +11,10 @@ on:
 jobs:
   Check-Lint:
     if: ${{ inputs.CHECK_LINT }}
-    uses: mathem-se/gh-workflows-node/.github/workflows/step-check-lint.yml@develop
+    uses: mathem-se/gh-workflows-node/.github/workflows/step-check-lint.yml@main
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
   Test:
-    uses: mathem-se/gh-workflows-node/.github/workflows/step-test-pull-request.yml@develop
+    uses: mathem-se/gh-workflows-node/.github/workflows/step-test-pull-request.yml@main
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
