@@ -1,0 +1,36 @@
+on:
+  workflow_call:
+    secrets:
+      NODE_AUTH_TOKEN:
+        required: true
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+jobs:
+  Check-Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: 'https://npm.pkg.github.com'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+        shell: bash
+
+      - name: Lint code
+        uses: wearerequired/lint-action@v2
+        with:
+          eslint: true
+          eslint_dir: src/
+          eslint_extensions: js,ts,tsx
+          prettier: true
+          prettier_dir: src/
+          prettier_extensions: js,ts,tsx
+          continue_on_error: false
