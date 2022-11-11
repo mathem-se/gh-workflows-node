@@ -54,3 +54,34 @@ jobs:
       AWS_CICD_API_URL: ${{ secrets.AWS_CICD_API_URL }}
       AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
 ```
+
+### Deploy new GH package
+
+Add the following file `.github/workflows/deploy.yml` to your project with this content:
+
+```yaml
+name: Release Version
+on:
+  push:
+    branches: [main, master, develop]
+
+permissions:
+  id-token: write
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
+  checks: write
+
+jobs:
+  Deploy:
+    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-gh-package.yml@develop
+    with:
+      domain: <repo name> #change value
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY }}
+      SEMANTIC_RELEASE_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
+      AWS_CICD_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
+      AWS_CICD_API_URL: ${{ secrets.AWS_CICD_API_URL }}
+      AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
+```
