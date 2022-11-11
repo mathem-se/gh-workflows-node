@@ -52,5 +52,5 @@ jobs:
       AWS_DEPLOY_REGION: ${{ inputs.AWS_DEPLOY_REGION }}
     secrets:
       AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
-      NODE_AUTH_TOKEN: secrets.NODE_AUTH_TOKEN
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       AWS_ACCOUNT: ${{ needs.Account.outputs.account }}
