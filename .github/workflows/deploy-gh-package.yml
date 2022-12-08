@@ -5,6 +5,7 @@ on:
         required: true
         type: string
       node-version:
+        type: number
         required: false
         default: 16
     secrets:

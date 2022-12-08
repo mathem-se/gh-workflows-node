@@ -2,6 +2,7 @@ on:
   workflow_call:
     inputs:
       node-version:
+        type: number
         required: false
         default: 16
     secrets:
