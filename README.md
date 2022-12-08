@@ -1,5 +1,9 @@
 # Reusable workflows
 
+## Contribute
+
+After you have merged your PR to **develop** you can test it out in your repo by pointing the workflow towards **@develop** (`uses: mathem-se/gh-workflows-node/.github/workflows/pull-request.yml@develop`). When you verified it worked you can "release it" to all users of these workflows by merging to **main**. (don't forget to re-point your repo to **@main**).
+
 ## Getting started
 
 Make sure your repo has the following scripts:
