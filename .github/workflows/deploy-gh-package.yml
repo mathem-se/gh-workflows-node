@@ -4,6 +4,9 @@ on:
       domain:
         required: true
         type: string
+      node-version:
+        required: false
+        default: 16
     secrets:
       NODE_AUTH_TOKEN:
         required: true
@@ -32,6 +35,7 @@ jobs:
     uses: mathem-se/gh-workflows-node/.github/workflows/step-test-deploy.yml@main
     with:
       domain: ${{ inputs.domain }}
+      node-version: ${{ inputs.node-version }}
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       AWS_ACCOUNT: ${{ needs.Account.outputs.account }}
@@ -40,6 +44,8 @@ jobs:
   Release:
     needs: [Test]
     uses: mathem-se/gh-workflows-node/.github/workflows/step-release-gh-package.yml@main
+    with:
+      node-version: ${{ inputs.node-version }}
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       SEMANTIC_RELEASE_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
