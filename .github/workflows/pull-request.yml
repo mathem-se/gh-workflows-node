@@ -4,6 +4,9 @@ on:
       CHECK_LINT:
         type: boolean
         default: true
+      node-version:
+        required: false
+        default: 16
     secrets:
       NODE_AUTH_TOKEN:
         required: true
@@ -12,9 +15,13 @@ jobs:
   Check-Lint:
     if: ${{ inputs.CHECK_LINT }}
     uses: mathem-se/gh-workflows-node/.github/workflows/step-check-lint.yml@main
+    with:
+      node-version: ${{ inputs.node-version }}
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
   Test:
     uses: mathem-se/gh-workflows-node/.github/workflows/step-test-pull-request.yml@main
+    with:
+      node-version: ${{ inputs.node-version }}
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

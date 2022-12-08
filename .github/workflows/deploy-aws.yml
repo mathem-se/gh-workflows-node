@@ -11,6 +11,9 @@ on:
       team:
         required: true
         type: string
+      node-version:
+        required: false
+        default: 16
     secrets:
       NODE_AUTH_TOKEN:
         required: true
@@ -37,6 +40,7 @@ jobs:
     uses: mathem-se/gh-workflows-node/.github/workflows/step-test-deploy.yml@main
     with:
       domain: ${{ inputs.domain }}
+      node-version: ${{ inputs.node-version }}
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       AWS_ACCOUNT: ${{ needs.Account.outputs.account }}
@@ -50,6 +54,7 @@ jobs:
       team: ${{ inputs.team }}
       environment: ${{ needs.Account.outputs.environment }}
       AWS_DEPLOY_REGION: ${{ inputs.AWS_DEPLOY_REGION }}
+      node-version: ${{ inputs.node-version }}
     secrets:
       AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

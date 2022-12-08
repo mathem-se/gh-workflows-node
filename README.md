@@ -85,3 +85,22 @@ jobs:
       AWS_CICD_API_URL: ${{ secrets.AWS_CICD_API_URL }}
       AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
 ```
+
+### Specify custom node-version
+
+All workflows support node-version as an input. Default version will be 16.
+To run with node 18 use the following input:
+
+```yaml
+name: Pull request
+on: [pull_request]
+
+jobs:
+  PR:
+    uses: mathem-se/gh-workflows-node/.github/workflows/pull-request.yml@main
+    with:
+      CHECK_LINT: false #if you don't want to check lint (defaults to true)
+      node-version: 18
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY}}
+```
