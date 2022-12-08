@@ -1,5 +1,10 @@
 on:
   workflow_call:
+    inputs:
+      node-version:
+        type: number
+        required: false
+        default: 16
     secrets:
       NODE_AUTH_TOKEN:
         required: true
@@ -16,7 +21,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ inputs.node-version }}
           registry-url: 'https://npm.pkg.github.com'
       - name: Run test
         run: |

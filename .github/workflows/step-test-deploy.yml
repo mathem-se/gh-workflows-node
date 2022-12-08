@@ -4,6 +4,10 @@ on:
       domain:
         required: true
         type: string
+      node-version:
+        type: number
+        required: false
+        default: 16
     secrets:
       AWS_ACCOUNT:
         required: true
@@ -28,7 +32,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ inputs.node-version }}
           registry-url: 'https://npm.pkg.github.com'
       - name: Run test
         run: |
