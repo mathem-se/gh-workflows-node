@@ -33,7 +33,7 @@ jobs:
 
   Test:
     needs: [Account]
-    uses: ./step-test-deploy.yml
+    uses: ./.github/workflows/step-test-deploy.yml
     with:
       domain: ${{ inputs.domain }}
       node-version: ${{ inputs.node-version }}
@@ -44,7 +44,7 @@ jobs:
 
   Release:
     needs: [Test]
-    uses: ./step-release-gh-package.yml
+    uses: ./.github/workflows/step-release-gh-package.yml
     with:
       node-version: ${{ inputs.node-version }}
     secrets:

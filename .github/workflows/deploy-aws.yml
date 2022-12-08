@@ -38,7 +38,7 @@ jobs:
 
   Test:
     needs: [Account]
-    uses: ./step-test-deploy.yml
+    uses: ./.github/workflows/step-test-deploy.yml
     with:
       domain: ${{ inputs.domain }}
       node-version: ${{ inputs.node-version }}
@@ -49,7 +49,7 @@ jobs:
 
   Release:
     needs: [Account, Test]
-    uses: ./step-release-aws.yml
+    uses: ./.github/workflows/step-release-aws.yml
     with:
       domain: ${{ inputs.domain }}
       team: ${{ inputs.team }}

@@ -15,13 +15,13 @@ on:
 jobs:
   Check-Lint:
     if: ${{ inputs.CHECK_LINT }}
-    uses: ./step-check-lint.yml
+    uses: ./.github/workflows/step-check-lint.yml
     with:
       node-version: ${{ inputs.node-version }}
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
   Test:
-    uses: ./step-test-pull-request.yml
+    uses: ./.github/workflows/step-test-pull-request.yml
     with:
       node-version: ${{ inputs.node-version }}
     secrets:
