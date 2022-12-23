@@ -8,10 +8,6 @@ on:
         type: number
         required: false
         default: 16
-      RUN_TESTS:
-        required: false
-        type: boolean
-        default: true
     secrets:
       AWS_ACCOUNT:
         required: true
@@ -29,7 +25,6 @@ env:
 
 jobs:
   Test:
-    if: ${{ inputs.RUN_TESTS }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
