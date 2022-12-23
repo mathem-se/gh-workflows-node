@@ -42,10 +42,10 @@ jobs:
 
   Test:
     needs: [Account]
-    if: ${{ inputs.RUN_TESTS }}
     uses: ./.github/workflows/step-test-deploy.yml
     with:
       domain: ${{ inputs.domain }}
+      RUN_TESTS: ${{ inputs.RUN_TESTS }}
       node-version: ${{ inputs.node-version }}
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
