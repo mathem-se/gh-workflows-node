@@ -18,7 +18,7 @@ on:
     secrets:
       NODE_AUTH_TOKEN:
         required: true
-      AWS_CICD_API_REGION:
+      AWS_API_REGION:
         required: true
       AWS_ACCOUNT:
         required: true
@@ -43,7 +43,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-actions
           role-session-name: github-actions-oidc-session
-          aws-region: ${{ secrets.AWS_CICD_API_REGION }}
+          aws-region: ${{ secrets.AWS_API_REGION }}
       - name: Install packages
         run: npm ci
       - name: Build source code
