@@ -5,6 +5,10 @@ on:
         required: false
         type: string
         default: 'eu-west-1'
+      RUN_TESTS:
+        required: false
+        type: boolean
+        default: true
       domain:
         required: true
         type: string

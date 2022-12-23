@@ -1,0 +1,52 @@
+on:
+  workflow_call:
+    inputs:
+      LOCAL_PATH:
+        description: The local path to the build artifacts to upload to S3
+        type: string
+        required: false
+        default: './dist'
+      node-version:
+        type: number
+        required: false
+        default: 16
+      registry-url:
+        description: The NodeJS package registry URL to use
+        type: string
+        required: false
+        default: 'https://npm.pkg.github.com'
+    secrets:
+      NODE_AUTH_TOKEN:
+        required: true
+      AWS_API_REGION:
+        required: true
+      AWS_ACCOUNT:
+        required: true
+      AWS_DEPLOY_REGION:
+        required: true
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+jobs:
+  S3Upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+          registry-url: ${{ inputs.registry-url }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-actions
+          role-session-name: github-actions-oidc-session
+          aws-region: ${{ secrets.AWS_API_REGION }}
+      - name: Install packages
+        run: npm ci
+      - name: Build source code
+        run: npm run build --if-present
+      - name: Upload artifacts to S3
+        run: aws s3 sync ${{ inputs.LOCAL_PATH }} s3://${{ secrets.AWS_ACCOUNT }}-${{ github.event.repository.name }} --acl public-read --region ${{ secrets.AWS_DEPLOY_REGION }}

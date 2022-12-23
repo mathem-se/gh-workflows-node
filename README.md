@@ -108,3 +108,46 @@ jobs:
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY}}
 ```
+
+### Deploy static assets to AWS S3
+
+#### Prerequisites
+
+Make sure that your cloudformation `template.yaml` creates the infra needed to be able to upload the static assets to AWS. A S3 bucket named `<AWS_ACCOUNT_ID>-<REPOSITORY_NAME>` is **required**. You could also optionally sets up a AWS Cloudfront distribution in front off S3 and invalidate the cache using this workflow.
+
+Add the following file `.github/workflows/deploy.yml` to your project with this content:
+
+```yaml
+name: Deploy static assets
+on:
+  push:
+    branches: [develop, main, master]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  DeployInfra:
+    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-aws.yml@main
+    with:
+      domain: <repo name> #change value
+      team: <team name> #change value
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY }}
+      AWS_CICD_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
+      AWS_CICD_API_URL: ${{ secrets.AWS_CICD_API_URL }}
+      AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
+  
+  Release:
+    needs: [DeployInfra]
+    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-static-assets.yml@develop
+    with:
+      LOCAL_PATH: <local-path> # Local path to static assets to be uploaded, defaults to ./dist
+      DISTRIBUTION_ID: <distribution-id> # Optionally provide you cloudfront distribution id to invalidate the cache.
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY }}
+      AWS_CICD_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
+      AWS_CICD_API_URL: ${{ secrets.AWS_CICD_API_URL }}
+      AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
+```
