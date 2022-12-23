@@ -1,0 +1,75 @@
+on:
+  workflow_call:
+    inputs:
+      LOCAL_PATH:
+        description: The local path to the build artifacts to upload to S3
+        type: string
+        required: false
+        default: './dist'
+      DISTRIBUTION_ID:
+        description: The Cloudfront distribution ID to invalidate
+        type: string
+        required: false
+      PATHS_TO_INVALIDATE:
+        description: The paths to invalidate in the Cloudfront distribution, defaults to "/*"
+        type: string
+        required: false
+        default: "/*"
+      AWS_DEPLOY_REGION:
+        description: The AWS region to deploy to
+        required: false
+        type: string
+        default: 'eu-west-1'
+      node-version:
+        description: The NodeJS version to use
+        type: number
+        required: false
+        default: 16
+      registry-url:
+        description: The NodeJS package registry URL to use
+        type: string
+        required: false
+        default: 'https://registry.npmjs.org'
+    secrets:
+      NODE_AUTH_TOKEN:
+        required: true
+      AWS_CICD_ACCOUNT:
+        required: true
+      AWS_CICD_API_URL:
+        required: true
+      AWS_CICD_API_REGION:
+        required: true
+jobs:
+  Account:
+    uses: mathem-se/gh-account-mapping/.github/workflows/workflow.yml@main
+    with:
+      branch: ${{ github.ref_name }}
+      role-session-name: 'github-actions-oidc-session'
+    secrets:
+      AWS_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
+      AWS_API: ${{ secrets.AWS_CICD_API_URL }}
+      AWS_REGION: ${{ secrets.AWS_CICD_API_REGION }}
+  
+  Upload:
+    needs: [Account]
+    uses: ./.github/workflows/step-upload-s3.yml
+    with:
+      LOCAL_PATH: ${{ inputs.LOCAL_PATH }}
+      node-version: ${{ inputs.node-version }}
+      registry-url: ${{ inputs.registry-url }}
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      AWS_ACCOUNT: ${{ needs.Account.outputs.account }}
+      AWS_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
+      AWS_DEPLOY_REGION: ${{ inputs.AWS_DEPLOY_REGION }}
+  
+  Invalidate:
+    needs: [Account, Upload]
+    if: ${{ !!inputs.DISTRIBUTION_ID }}
+    uses: ./.github/workflows/step-cloudfront-invalidate.yml
+    with:
+      DISTRIBUTION_ID: ${{ inputs.DISTRIBUTION_ID }}
+      PATHS_TO_INVALIDATE: ${{ inputs.PATHS_TO_INVALIDATE }}
+    secrets:
+      AWS_ACCOUNT: ${{ needs.Account.outputs.account }}
+      AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
