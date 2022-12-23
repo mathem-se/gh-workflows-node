@@ -5,6 +5,10 @@ on:
         required: false
         type: string
         default: 'eu-west-1'
+      RUN_TESTS:
+        required: false
+        type: boolean
+        default: true
       domain:
         required: true
         type: string
@@ -38,6 +42,7 @@ jobs:
 
   Test:
     needs: [Account]
+    if: ${{ inputs.RUN_TESTS }}
     uses: ./.github/workflows/step-test-deploy.yml
     with:
       domain: ${{ inputs.domain }}
