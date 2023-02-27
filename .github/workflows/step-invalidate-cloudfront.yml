@@ -25,4 +25,4 @@ jobs:
           role-session-name: github-actions-oidc-session
           aws-region: ${{ secrets.AWS_CICD_API_REGION }}
       - name: Invalidate Cloudfront cache
-        run: aws cloudfront create-invalidation --distribution-id ${{ inputs.DISTRIBUTION_ID }} --paths ${{ inputs.PATHS_TO_INVALIDATE }}
+        run: aws cloudfront create-invalidation --distribution-id ${{ inputs.DISTRIBUTION_ID }} --paths '${{ inputs.PATHS_TO_INVALIDATE }}'
