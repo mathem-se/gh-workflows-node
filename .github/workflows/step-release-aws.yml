@@ -39,7 +39,10 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
           registry-url: 'https://npm.pkg.github.com'
-      - run: npm run build --if-present
+      - name: npm build (if present)
+        run: |
+          npm ci --ignore-scripts
+          npm run build --if-present
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
