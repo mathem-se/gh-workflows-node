@@ -92,7 +92,7 @@ jobs:
 
 ### Specify custom node-version
 
-All workflows support node-version as an input. Default version will be 16.
+All workflows support `node-version` as an input. Default version will be 16.
 To run with node 18 use the following input:
 
 ```yaml
@@ -107,6 +107,27 @@ jobs:
       node-version: 18
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY}}
+```
+
+### Specify custom npm run command
+
+Some workflows support `run-command` as an input. This command will be run in the release-step before the "normal" release flow.
+
+```yaml
+jobs:
+  Deploy:
+    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-aws.yml@main
+    with:
+      domain: 'ecom-service-asdf'
+      team: 'ecom-pro'
+      run-command: 'build'
+      node-version: 18
+
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY }}
+      AWS_CICD_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
+      AWS_CICD_API_URL: ${{ secrets.AWS_CICD_API_URL }}
+      AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
 ```
 
 ### Deploy static assets to AWS S3
