@@ -38,12 +38,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: NPM build
+      - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node-version }}
           registry-url: 'https://npm.pkg.github.com'
-      - name: npm build (if present)
+      - name: npm run command (if specified)
         if: ${{ inputs.run-command }}
         run: |
           npm ci --ignore-scripts
