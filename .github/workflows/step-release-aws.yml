@@ -13,6 +13,10 @@ on:
       AWS_DEPLOY_REGION:
         required: true
         type: string
+      run-command:
+        type: string
+        description: 'npm run command to run before sam build'
+        required: false
       node-version:
         type: number
         required: false
@@ -40,9 +44,10 @@ jobs:
           node-version: ${{ inputs.node-version }}
           registry-url: 'https://npm.pkg.github.com'
       - name: npm build (if present)
+        if: ${{ inputs.run-command }}
         run: |
           npm ci --ignore-scripts
-          npm run build --if-present
+          npm run ${{ inputs.run-command }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:

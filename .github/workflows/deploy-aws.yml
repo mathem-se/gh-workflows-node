@@ -15,6 +15,10 @@ on:
       team:
         required: true
         type: string
+      run-command:
+        type: string
+        description: 'npm run command to run before sam build'
+        required: false
       node-version:
         type: number
         required: false
@@ -66,6 +70,7 @@ jobs:
       team: ${{ inputs.team }}
       environment: ${{ needs.Account.outputs.environment }}
       AWS_DEPLOY_REGION: ${{ inputs.AWS_DEPLOY_REGION }}
+      run-command: ${{ inputs.run-command }}
       node-version: ${{ inputs.node-version }}
     secrets:
       AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
