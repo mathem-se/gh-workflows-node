@@ -24,7 +24,7 @@ jobs:
   BranchToUseForAccount:
     runs-on: ubuntu-latest
     outputs:
-      accountBranch: ${{ steps.calculate-branch.outputs.branch }}
+      accountBranch: ${{ steps.calculate-branch.outputs.accountBranch }}
     steps:
       - id: calculate-branch
         shell: bash
