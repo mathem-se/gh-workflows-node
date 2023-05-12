@@ -24,25 +24,25 @@ jobs:
   BranchToUseForAccount:
     runs-on: ubuntu-latest
     outputs:
-      branch: ${{ steps.calculate-branch.outputs.branch }}
+      accountBranch: ${{ steps.calculate-branch.outputs.branch }}
     steps:
       - id: calculate-branch
         shell: bash
         run: |
           if [[ "${{ github.ref_name }}" == "develop" ]]; then
-            echo "branch=${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "accountBranch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
-            echo "branch=${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "accountBranch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref_name }}" == "master" ]]; then
-            echo "branch=${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "accountBranch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           else
-            echo "branch=develop" >> $GITHUB_ENV
+            echo "accountBranch=develop" >> $GITHUB_OUTPUT
           fi
   Account:
     needs: [BranchToUseForAccount]
     uses: mathem-se/gh-account-mapping/.github/workflows/workflow.yml@main
     with:
-      branch: ${{ needs.BranchToUseForAccount.outputs.branch}}
+      branch: ${{ needs.BranchToUseForAccount.outputs.accountBranch}}
       role-session-name: 'github-actions-oidc-session'
     secrets:
       AWS_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
