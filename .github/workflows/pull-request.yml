@@ -27,9 +27,7 @@ jobs:
     if: ${{ inputs.CHECK_IAM }}
     uses: ./.github/workflows/step-check-iam.yml
     with:
-      BRANCH: ${{ github.head_ref }}
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+      BRANCH: ${{ github.head_ref }}   
   Test:
     uses: ./.github/workflows/step-test-pull-request.yml
     with:
