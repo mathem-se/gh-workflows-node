@@ -28,6 +28,7 @@ jobs:
     uses: mathem-se/gh-workflows-node/.github/workflows/pull-request.yml@main
     with:
       CHECK_LINT: false #if you don't want to check lint (defaults to true)
+      CHECK_IAM: false #if you don't want to validate IAM permissions (defaults to true)
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_READ_ONLY}}
 ```
