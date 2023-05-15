@@ -7,13 +7,14 @@ on:
       branch:
         type: string
         required: true
-    secrets:
-      GITHUB_TOKEN:
-        required: true
+
 jobs:
   Check-IAM:
     if: ${{ inputs.CHECK_IAM }}
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
     - name: Checkout
       uses: actions/checkout@v3      
