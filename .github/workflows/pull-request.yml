@@ -4,6 +4,9 @@ on:
       CHECK_LINT:
         type: boolean
         default: true
+      CHECK_IAM:
+        type: boolean
+        default: true        
       node-version:
         type: number
         required: false
@@ -20,6 +23,13 @@ jobs:
       node-version: ${{ inputs.node-version }}
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+  Check-IAM:
+    if: ${{ inputs.CHECK_IAM }}
+    uses: ./.github/workflows/step-check-iam.yml
+    with:
+      BRANCH: ${{ github.head_ref }}
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
   Test:
     uses: ./.github/workflows/step-test-pull-request.yml
     with:
