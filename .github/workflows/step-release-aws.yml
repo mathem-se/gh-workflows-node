@@ -21,6 +21,14 @@ on:
         type: number
         required: false
         default: 16
+      sam-template-file:
+        type: string
+        required: false
+        default: ''
+      sam-config-file:
+        type: string
+        required: false
+        default: 'samconfig.toml'
     secrets:
       AWS_ACCOUNT:
         required: true
@@ -57,13 +65,26 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          if [ ! -z "${{ inputs.sam-template-file }}" ]
+          then
+              template_file_param="--template-file ${{ inputs.sam-template-file }}"
+          else
+              template_file_param=""
+          fi
           sam build \
           --parallel \
-          --config-file ./samconfig.toml \
-          --config-env ${{ inputs.environment }}
+          --config-file ${{ inputs.sam-config-file }} \
+          --config-env ${{ inputs.environment }} \
+          $template_file_param
       - name: Deploy
         shell: bash
         run: |
+          if [ ! -z "${{ inputs.sam-template-file }}" ]
+          then
+              template_file_param="--template-file ${{ inputs.sam-template-file }}"
+          else
+              template_file_param=""
+          fi
           sam deploy \
           --no-confirm-changeset \
           --no-fail-on-empty-changeset \
@@ -72,8 +93,9 @@ jobs:
           --region ${{ inputs.AWS_DEPLOY_REGION }} \
           --s3-prefix ${{ github.event.repository.name }} \
           --resolve-s3 \
-          --config-file ./samconfig.toml \
+          --config-file ${{ inputs.sam-config-file }} \
           --config-env ${{ inputs.environment }} \
           --tags \
             'domain=${{ inputs.domain }} \
-            team=${{ inputs.team }}'
+            team=${{ inputs.team }}' \
+          $template_file_param 
