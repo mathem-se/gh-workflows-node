@@ -60,6 +60,45 @@ jobs:
       AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
 ```
 
+#### Deploy custom templates with SAM
+
+You can specify `sam-template-file` and `sam-config-file` with the deploy job:
+
+```yaml
+jobs:
+  Deploy:
+    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-aws.yml@main
+    with:
+      sam-template-file: <template file name> #change value
+      sam-config-file: <config file name> #change value
+      ...
+    secrets:
+      ...
+```
+
+This enables you to deploy multiple stacks from the same git repository:
+
+```yaml
+jobs:
+  DeployBaseInfra:
+    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-aws.yml@main
+    with:
+      sam-template-file: template.base.yaml
+      sam-config-file: samconfig.base.toml
+      ...
+    secrets:
+      ...
+  DeployServices:
+    needs: [DeployBaseInfra]
+    uses: mathem-se/gh-workflows-node/.github/workflows/deploy-aws.yml@main
+    with:
+      sam-template-file: template.services.yaml
+      sam-config-file: samconfig.services.toml
+      ...
+    secrets:
+      ...
+```
+
 ### Deploy new GH package
 
 Add the following file `.github/workflows/deploy.yml` to your project with this content:
