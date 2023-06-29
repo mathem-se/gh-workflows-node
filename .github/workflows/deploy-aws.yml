@@ -23,6 +23,14 @@ on:
         type: number
         required: false
         default: 16
+      sam-template-file:
+        type: string
+        required: false
+        default: ''
+      sam-config-file:
+        type: string
+        required: false
+        default: 'samconfig.toml'
     secrets:
       NODE_AUTH_TOKEN:
         required: true
@@ -72,6 +80,8 @@ jobs:
       AWS_DEPLOY_REGION: ${{ inputs.AWS_DEPLOY_REGION }}
       run-command: ${{ inputs.run-command }}
       node-version: ${{ inputs.node-version }}
+      sam-template-file: ${{ inputs.sam-template-file }}
+      sam-config-file: ${{ inputs.sam-config-file }}
     secrets:
       AWS_CICD_API_REGION: ${{ secrets.AWS_CICD_API_REGION }}
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
