@@ -86,4 +86,3 @@ jobs:
           --tags \
             'domain=${{ inputs.domain }} \
             team=${{ inputs.team }}' \
-          --template-file template.eu-west-1.yaml
