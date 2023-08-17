@@ -67,18 +67,12 @@ jobs:
         run: |
           sam build \
           --parallel \
-          --config-file samconfig.eu-west-1 \
+          --config-file samconfig.eu-west-1.toml \
           --config-env ${{ inputs.environment }} \
           --template-file template.eu-west-1.yaml
       - name: Deploy
         shell: bash
         run: |
-          if [ ! -z "${{ inputs.sam-template-file }}" ]
-          then
-              template_file_param="--template-file ${{ inputs.sam-template-file }}"
-          else
-              template_file_param=""
-          fi
           sam deploy \
           --no-confirm-changeset \
           --no-fail-on-empty-changeset \
@@ -87,7 +81,7 @@ jobs:
           --region ${{ inputs.AWS_DEPLOY_REGION }} \
           --s3-prefix ${{ github.event.repository.name }} \
           --resolve-s3 \
-          --config-file samconfig.eu-west-1 \
+          --config-file samconfig.eu-west-1.toml \
           --config-env ${{ inputs.environment }} \
           --tags \
             'domain=${{ inputs.domain }} \
