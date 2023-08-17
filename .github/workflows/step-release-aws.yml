@@ -65,17 +65,11 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          if [ ! -z "${{ inputs.sam-template-file }}" ]
-          then
-              template_file_param="--template-file ${{ inputs.sam-template-file }}"
-          else
-              template_file_param=""
-          fi
           sam build \
           --parallel \
-          --config-file ${{ inputs.sam-config-file }} \
+          --config-file samconfig.eu-west-1 \
           --config-env ${{ inputs.environment }} \
-          $template_file_param
+          --template-file template.eu-west-1.yaml
       - name: Deploy
         shell: bash
         run: |
@@ -93,9 +87,9 @@ jobs:
           --region ${{ inputs.AWS_DEPLOY_REGION }} \
           --s3-prefix ${{ github.event.repository.name }} \
           --resolve-s3 \
-          --config-file ${{ inputs.sam-config-file }} \
+          --config-file samconfig.eu-west-1 \
           --config-env ${{ inputs.environment }} \
           --tags \
             'domain=${{ inputs.domain }} \
             team=${{ inputs.team }}' \
-          $template_file_param 
+          --template-file template.eu-west-1.yaml
