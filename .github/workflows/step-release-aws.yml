@@ -71,9 +71,15 @@ jobs:
           else
               template_file_param=""
           fi
+          if [ ! -z "${{ inputs.sam-config-file }}" ]
+          then
+              config_file_param="--config-file ${{ inputs.sam-config-file }}"
+          else
+              config_file_param=""
+          fi          
           sam build \
           --parallel \
-          --config-file ${{ inputs.sam-config-file }} \
+          $config_file_param \
           --config-env ${{ inputs.environment }} \
           $template_file_param
       - name: Deploy
@@ -85,6 +91,12 @@ jobs:
           else
               template_file_param=""
           fi
+          if [ ! -z "${{ inputs.sam-config-file }}" ]
+          then
+              config_file_param="--config-file ${{ inputs.sam-config-file }}"
+          else
+              config_file_param=""
+          fi               
           sam deploy \
           --no-confirm-changeset \
           --no-fail-on-empty-changeset \
@@ -93,7 +105,7 @@ jobs:
           --region ${{ inputs.AWS_DEPLOY_REGION }} \
           --s3-prefix ${{ github.event.repository.name }} \
           --resolve-s3 \
-          --config-file ${{ inputs.sam-config-file }} \
+          config_file_param \
           --config-env ${{ inputs.environment }} \
           --tags \
             'domain=${{ inputs.domain }} \
