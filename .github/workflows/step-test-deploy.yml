@@ -102,7 +102,7 @@ jobs:
           name: code-coverage-report
           path: ./coverage/report.json
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         if: |
           github.ref_name == 'develop' ||
           github.ref_name == 'main' ||

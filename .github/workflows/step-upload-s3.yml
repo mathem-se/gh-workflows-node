@@ -39,7 +39,7 @@ jobs:
           node-version: ${{ inputs.node-version }}
           registry-url: ${{ inputs.registry-url }}
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-actions
           role-session-name: github-actions-oidc-session
