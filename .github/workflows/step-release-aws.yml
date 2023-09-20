@@ -57,7 +57,7 @@ jobs:
           npm ci --ignore-scripts
           npm run ${{ inputs.run-command }}
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/github-actions
           role-session-name: github-actions-oidc-session
@@ -105,7 +105,7 @@ jobs:
           --region ${{ inputs.AWS_DEPLOY_REGION }} \
           --s3-prefix ${{ github.event.repository.name }} \
           --resolve-s3 \
-          config_file_param \
+          $config_file_param \
           --config-env ${{ inputs.environment }} \
           --tags \
             'domain=${{ inputs.domain }} \
