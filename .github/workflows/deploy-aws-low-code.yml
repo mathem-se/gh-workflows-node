@@ -22,7 +22,7 @@ on:
       sam-config-file:
         type: string
         required: false
-        default: 'samconfig.toml'
+        default: ''
     secrets:
       NODE_AUTH_TOKEN:
         required: true
