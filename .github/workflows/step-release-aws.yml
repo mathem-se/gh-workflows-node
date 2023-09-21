@@ -101,7 +101,6 @@ jobs:
           --no-confirm-changeset \
           --no-fail-on-empty-changeset \
           --stack-name ${{ github.event.repository.name }} \
-          --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
           --region ${{ inputs.AWS_DEPLOY_REGION }} \
           --s3-prefix ${{ github.event.repository.name }} \
           --resolve-s3 \
