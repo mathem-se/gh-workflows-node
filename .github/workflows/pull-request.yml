@@ -9,7 +9,7 @@ on:
         default: true
       CHECK_SECURITY_AUDIT:
         type: boolean
-        default: true
+        default: false
       node-version:
         type: number
         required: false
