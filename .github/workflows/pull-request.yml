@@ -10,6 +10,10 @@ on:
       CHECK_SECURITY_AUDIT:
         type: boolean
         default: false
+      audit_level:
+        type: string
+        required: false
+        default: low
       node-version:
         type: number
         required: false
@@ -34,6 +38,9 @@ jobs:
   Check-Security-Audit:
     if: ${{ inputs.CHECK_SECURITY_AUDIT }}
     uses: ./.github/workflows/step-check-security-audit.yml
+    with:
+      audit_level: ${{ inputs.audit_level }}
+      node-version: ${{ inputs.node-version }}
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
   Test:
