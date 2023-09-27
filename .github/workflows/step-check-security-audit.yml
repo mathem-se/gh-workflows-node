@@ -37,4 +37,6 @@ jobs:
         uses: oke-py/npm-audit-action@v2
         with:
           audit_level: ${{ inputs.audit_level }}
+          create_issues: false
+          create_pr_comments: false
           # github_token: ${{ secrets.GITHUB_TOKEN }} # this is specified as required for "oke-py/npm-audit-action", but seems to work well enough without it - only practical difference is that it won't comment on the PR
