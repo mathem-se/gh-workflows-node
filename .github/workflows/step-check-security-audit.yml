@@ -37,4 +37,3 @@ jobs:
         uses: oke-py/npm-audit-action@v2
         with:
           audit_level: ${{ inputs.audit_level }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
