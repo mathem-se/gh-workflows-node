@@ -6,7 +6,10 @@ on:
         default: true
       CHECK_IAM:
         type: boolean
-        default: true        
+        default: true
+      CHECK_SECURITY_AUDIT:
+        type: boolean
+        default: true
       node-version:
         type: number
         required: false
@@ -27,7 +30,12 @@ jobs:
     if: ${{ inputs.CHECK_IAM }}
     uses: ./.github/workflows/step-check-iam.yml
     with:
-      BRANCH: ${{ github.head_ref }}   
+      BRANCH: ${{ github.head_ref }}
+  Check-Security-Audit:
+    if: ${{ inputs.CHECK_SECURITY_AUDIT }}
+    uses: ./.github/workflows/step-check-security-audit.yml
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
   Test:
     uses: ./.github/workflows/step-test-pull-request.yml
     with:
