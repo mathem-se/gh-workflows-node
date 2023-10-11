@@ -55,6 +55,7 @@ jobs:
       branch: ${{ github.ref_name }}
       role-session-name: 'github-actions-oidc-session'
       accountName: ${{ inputs.accountName }}
+      region: ${{ inputs.region }}
     secrets:
       AWS_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
       AWS_API: ${{ secrets.AWS_CICD_API_URL }}
