@@ -27,6 +27,10 @@ on:
         type: string
         required: false
         default: ''
+      region:
+        type: string
+        required: false
+        default: 'eu-west-1'
     secrets:
       NODE_AUTH_TOKEN:
         required: true
