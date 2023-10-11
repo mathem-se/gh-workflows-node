@@ -76,7 +76,8 @@ jobs:
               config_file_param="--config-file ${{ inputs.sam-config-file }}"
           else
               config_file_param=""
-          fi          
+          fi
+          npm i -g esbuild
           sam build \
           --parallel \
           $config_file_param \
