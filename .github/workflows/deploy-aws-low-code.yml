@@ -23,6 +23,10 @@ on:
         type: string
         required: false
         default: ''
+      accountName:
+        type: string
+        required: false
+        default: ''
     secrets:
       NODE_AUTH_TOKEN:
         required: true
@@ -46,6 +50,7 @@ jobs:
     with:
       branch: ${{ github.ref_name }}
       role-session-name: 'github-actions-oidc-session'
+      accountName: ${{ inputs.accountName }}
     secrets:
       AWS_ACCOUNT: ${{ secrets.AWS_CICD_ACCOUNT }}
       AWS_API: ${{ secrets.AWS_CICD_API_URL }}
