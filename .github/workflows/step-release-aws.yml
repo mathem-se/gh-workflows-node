@@ -77,7 +77,6 @@ jobs:
           else
               config_file_param=""
           fi
-          npm i -g esbuild
           sam build \
           --parallel \
           $config_file_param \
